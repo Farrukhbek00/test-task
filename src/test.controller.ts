@@ -39,8 +39,6 @@ testRoutes.get("/test", async (req: express.Request, resp: express.Response, nex
 });
 
 testRoutes.post("/test", upload.single("image"), async (req: express.Request, resp: express.Response, next: express.NextFunction) => {
-	console.log(req.file);
-	
 	const obj = {
 		name: req.body.name,
 		description: req.body.description,
@@ -53,6 +51,7 @@ testRoutes.post("/test", upload.single("image"), async (req: express.Request, re
 	TestModel.create(obj, (err, item) => {
 		if (err) {
 			console.log(err);
+			resp.json({"message": "Please, enter not duplicate name, and all fields all required"});
 		}
 		else {
 			resp.json(item);

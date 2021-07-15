@@ -7,7 +7,7 @@ import * as mongoose from "mongoose";
 dotenv.config();
 
 const PORT = env.PORT;
-const MONGO_URI = "mongodb://localhost:27017/test";
+const MONGO_URI = "mongodb://localhost:27017/task";
 const server = http.createServer(app);
 server.listen(PORT);
 server.on("listening", async() => {

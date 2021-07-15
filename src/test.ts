@@ -1,8 +1,15 @@
 import * as mongoose from "mongoose";
 
 const TestSchema = new mongoose.Schema({
-	description: {type: String},
-	name: {type: String},
+	description: {
+		type: String, 
+		required: true
+	},
+	name: {
+		type: String, 
+		required: true, 
+		unique: true
+	},
 	image:{
 		data: Buffer, 
 		contentType: String
