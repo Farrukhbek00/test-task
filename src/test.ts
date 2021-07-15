@@ -9,10 +9,6 @@ const TestSchema = new mongoose.Schema({
 		type: String, 
 		required: true, 
 		unique: true
-	},
-	image:{
-		data: Buffer, 
-		contentType: String
 	}
 });
 
