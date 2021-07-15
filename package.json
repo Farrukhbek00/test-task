@@ -11,6 +11,7 @@
   "dependencies": {
     "app-root-path": "^3.0.0",
     "dotenv": "^10.0.0",
+    "ejs": "^3.1.6",
     "eslint-config-airbnb": "^18.2.1",
     "express": "^4.17.1",
     "mongodb": "^4.0.0",

@@ -21,7 +21,15 @@ const testRoutes = express.Router();
 
 testRoutes.get("/test", async (req: express.Request, resp: express.Response, next: express.NextFunction) => {
 	try {
-		const items = await TestModel.find({});
+		let items: any = await TestModel.find({});
+		items = items.map((item) => {
+			return {
+				id: item._id,
+				name: item.name, 
+				description: item.description,
+				image: appRoot.path + "/uploads/" + item.name + ".jpg"
+			};
+		});
 		resp.json(items);
 	} catch (err) {
 		resp.status(500);
