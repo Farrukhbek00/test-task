@@ -1,3 +1,4 @@
+/* eslint-disable no-var */
 import * as express from "express";
 import { TestModel } from "./test";
 import * as multer from "multer";
@@ -7,23 +8,19 @@ import * as path from "path";
 import * as appRoot from "app-root-path";
 import * as https from "https";
 
-const storage = multer.diskStorage({
-	destination: (req, file, cb) => {
-		cb(null, "uploads");
-	},
-	filename: (req, file, cb) => {
-		cb(null, req.body.name + ".jpg");
-	}
-});
- 
-const upload = multer({ storage: storage });
-
-
 const testRoutes = express.Router();
 
 testRoutes.get("/test", async (req: express.Request, resp: express.Response, next: express.NextFunction) => {
 	try {
-		let items: any = await TestModel.find({});
+		const queryCond: any = {};
+		if (req.query.name) {
+			queryCond.name = req.query.name;
+		}
+		if (req.query.description) {
+			queryCond.description = req.query.description;
+		}
+		let items: any = await TestModel.find(queryCond, "name description").exec();
+
 		items = items.map((item) => {
 			return {
 				id: item._id,
@@ -40,31 +37,29 @@ testRoutes.get("/test", async (req: express.Request, resp: express.Response, nex
 	}
 });
 
-testRoutes.post("/test", upload.single("image"), async (req: express.Request, resp: express.Response, next: express.NextFunction) => {
+testRoutes.post("/test", async (req: express.Request, resp: express.Response, next: express.NextFunction) => {
 	const download = function(uri, filename, callback){
 		request.head(uri, function(err, res, body){
 			request(uri).pipe(fs.createWriteStream(path.join(appRoot.path + "/uploads/" + filename))).on("close", callback);
 		});
 	};
 
-	https.get("https://random.dog/woof.json", (resp) => {
+	https.get("https://random.dog/woof.json", (res) => {
 		let data = "";
 
-		// A chunk of data has been received.
-		resp.on("data", (chunk) => {
+		res.on("data", (chunk) => {
 			data += chunk;
 		});
 
-		// The whole response has been received. Print out the result.
-		resp.on("end", () => {
+		res.on("end", () => {
 			const filename = req.body.name + ".jpg";
 			const obj = JSON.parse(data);
-			console.log(filename);
-			
-		
-			download(obj.url, filename, function(){
-				console.log("done");
-			});	
+			const url = obj.url;
+			if (url.split(".")[2] != "mp4") {
+				download(url, filename, function(){
+					console.log("done");
+				});	
+			}
 		});
 		
 	}).on("error", (err) => {
